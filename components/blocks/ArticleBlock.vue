@@ -16,11 +16,11 @@
         <div class="tags">
           <nuxt-link
             v-for="category in article.categories"
-            :key="category"
-            :to="{ name: 'category-slug', params: { slug: category } }"
+            :key="category.slug"
+            :to="{ name: 'category-slug', params: { slug: category.slug } }"
             class="tag"
           >
-            #{{ category }}
+            #{{ category.category }}
           </nuxt-link>
         </div>
         <div v-if="article.featuredImage" class="image-wrapper">
@@ -37,7 +37,7 @@
               {{ article.totalTime }}
             </span>
           </div>
-          <time>{{ article.updatedFmt }}</time>
+          <time>{{ article.updated | FormatDate }}</time>
         </div>
       </header>
       <!-- eslint-disable-next-line -->
@@ -86,31 +86,19 @@ export default {
   },
   props: [],
   async fetch() {
-    let recipe
-    if (this.$store.getters.getArticleBySlug(this.$route.params.slug)) {
-      recipe = await this.$store.getters.getArticleBySlug(
-        this.$route.params.slug
-      )
-      this.article = recipe
-    } else {
-      const response = this.$fireStore
-        .collection('recipes')
-        .doc(this.$route.params.slug)
-      await response.get().then((recipe) => {
-        if (recipe.data() && recipe.data().publish === true) {
-          this.article = recipe.data()
-          // this.article = article
-          this.$store.commit('SET_CURRENT_ARTICLE', this.article)
-        } else {
-          // eslint-disable-next-line no-console
-          console.log(this.article)
-          // set status code on server
-          if (process.server) {
-            this.$nuxt.context.res.statusCode = 404
-          }
-          throw new Error('Article not found')
-        }
-      })
+    try {
+      const recipe = await this.$content(this.$route.params.slug).fetch()
+      if (recipe) {
+        this.article = recipe
+      } else {
+        // use throw new Error()
+        throw new Error('Recipe not found')
+      }
+    } catch {
+      // if (process.server) {
+      //   this.$nuxt.context.res.statusCode = 404
+      // }
+      throw new Error('Recipe Not Found')
     }
   },
   data() {

@@ -32,7 +32,8 @@ export default {
   },
   plugins: [
     '~/plugins/vue-placeholders.js',
-    '~/plugins/vue-observe-visibility.client.js'
+    '~/plugins/vue-observe-visibility.client.js',
+    '~/plugins/filters.js'
   ],
   buildModules: [
     '@nuxtjs/eslint-module',
@@ -41,8 +42,8 @@ export default {
     '@nuxtjs/color-mode'
   ],
   modules: [
-    'nuxt-dayjs-module',
     'nuxt-polyfill',
+    '@nuxt/content',
     // 'nuxt-ackee',
     [
       '@nuxtjs/firebase',
@@ -76,16 +77,16 @@ export default {
     ]
   },
   generate: {
-    static: true,
-    async routes() {
-      const { StoreDB } = require('./services/fireinit')
-      const qs = await StoreDB.collection('recipes')
-        .where('publish', '==', true)
-        .orderBy('updated', 'desc')
-        // .limit(10)
-        .get()
-      return qs.docs.map((x) => `/${x.data().slug}`)
-    }
+    concurrency: 100
+    //   async routes() {
+    //     const { StoreDB } = require('./services/fireinit')
+    //     const qs = await StoreDB.collection('recipes')
+    //       .where('publish', '==', true)
+    //       .orderBy('updated', 'desc')
+    //       .limit(10)
+    //       .get()
+    //     return qs.docs.map((x) => `/${x.data().slug}`)
+    //   }
   },
   target: 'static',
   ssr: true

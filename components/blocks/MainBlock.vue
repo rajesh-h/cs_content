@@ -42,6 +42,9 @@
         </content-placeholders>
       </div>
     </template>
+    <div v-if="noFurtherResult" class="no-more-results">
+      There are no more Recipes
+    </div>
   </div>
 </template>
 
@@ -61,55 +64,47 @@ export default {
     }
   },
   async fetch() {
-    const response = this.$fireStore
-      .collection('recipes')
-      .where('publish', '==', true)
-      .orderBy('updated', 'desc')
-    // .limit(10)
-
-    try {
-      await response.get().then((querySnapshot) => {
-        if (querySnapshot.empty) {
-          if (this.articles.length === 0) {
-            return this.$nuxt.error({
-              statusCode: 404,
-              message: 'No Recipes Found'
-            })
-          } else {
-            this.noFurtherResult = true
-            return
-          }
-        }
-        const lastDoc = querySnapshot.docs[querySnapshot.size - 1]
-        this.lastVisible = lastDoc.data().updated
-        querySnapshot.forEach((doc) => {
-          const UpdatedFmt = this.$dayjs(new Date(doc.data().updated)).format(
-            'DD-MMM-YYYY HH:mm'
-          ) // date object
-          this.articles.push({
-            ...doc.data(),
-            id: doc.id,
-            updatedFmt: UpdatedFmt
-          }) // Using spread operator to add ID of the document to array
-          this.$store.commit('SET_CURRENT_ARTICLES_LIST', {
-            ...doc.data(),
-            id: doc.id,
-            updatedFmt: UpdatedFmt
-          })
+    let qry
+    switch (this.queryType) {
+      case 'index':
+        qry = this.$content()
+        break
+      case 'category':
+        qry = this.$content().where({
+          searchTags: { $contains: 'Falooda' }
         })
-      })
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log('There is some error: ' + e)
+        break
+      default:
+        qry = this.$content()
     }
 
-    // eslint-disable-next-line no-console
-    // console.log(this.$store.state.currentArticlesList)
+    const recipes = await qry
+      .only([
+        'slug',
+        'featuredImage',
+        'title',
+        'serves',
+        'totalTime',
+        'updated',
+        'categories'
+      ])
+      .sortBy('updated', 'desc')
+      .skip(this.skipCnt)
+      .limit(this.limitCnt)
+      .fetch()
+
+    if (recipes.length !== 0) {
+      this.articles.push(...recipes)
+    } else {
+      this.noFurtherResult = true
+    }
   },
   data() {
     return {
       lastVisible: null,
       articles: [],
+      skipCnt: 0,
+      limitCnt: 10,
       noFurtherResult: false
     }
   },
@@ -122,10 +117,9 @@ export default {
   methods: {
     lazyLoadArticles(isVisible) {
       if (isVisible) {
-        // if (this.currentPage < 5) {
-        // this.currentPage++
         if (!this.noFurtherResult) {
-          // this.$fetch()
+          this.skipCnt += this.limitCnt
+          this.$fetch()
         }
         // }
       }
@@ -163,5 +157,13 @@ export default {
       width: calc(33.33333% - 2 * 1rem);
     }
   }
+}
+
+.no-more-results {
+  text-align: center;
+  color: grey;
+  margin: 1rem;
+  overflow: hidden;
+  box-shadow: -9px -9px 16px #f8fafe, 9px 9px 16px #ced2db;
 }
 </style>

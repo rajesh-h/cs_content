@@ -26,11 +26,11 @@
       <div class="tags">
         <nuxt-link
           v-for="category in article.categories"
-          :key="category"
-          :to="{ name: 'category-slug', params: { slug: category } }"
+          :key="category.slug"
+          :to="{ name: 'category-slug', params: { slug: category.slug } }"
           class="tag"
         >
-          #{{ category }}
+          #{{ category.category }}
         </nuxt-link>
       </div>
       <div class="meta">
@@ -44,7 +44,7 @@
             {{ article.totalTime }}
           </span>
         </div>
-        <time>{{ article.updatedFmt }}</time>
+        <time>{{ article.updated | FormatDate }}</time>
       </div>
     </div>
   </nuxt-link>

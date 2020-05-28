@@ -13,12 +13,13 @@
     "serve": "nuxt serve"
   },
   "dependencies": {
+    "@nuxt/content": "^1.2.0",
     "@nuxtjs/firebase": "^5.2.0",
+    "dayjs": "^1.8.27",
     "firebase": "^7.14.2",
     "intersection-observer": "^0.10.0",
     "nuxt-ackee": "^1.0.1",
-    "nuxt-dayjs-module": "^1.1.2",
-    "nuxt-edge": "^2.13.0-26494574.f4f6b191",
+    "nuxt-edge": "^2.13.0-26509786.618eb5fa",
     "nuxt-payload-extractor": "^1.0.0",
     "nuxt-polyfill": "^1.0.3",
     "vue-content-placeholders": "^0.2.1",

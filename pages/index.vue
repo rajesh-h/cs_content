@@ -1,5 +1,5 @@
 <template>
-  <main-block :query-type="queryType" />
+  <main-block />
 </template>
 
 <script>
