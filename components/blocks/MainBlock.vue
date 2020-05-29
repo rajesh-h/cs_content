@@ -71,8 +71,10 @@ export default {
         break
       case 'category':
         qry = this.$content().where({
-          searchTags: { $contains: 'Falooda' }
+          'categories.slug': { $contains: this.$route.params.slug }
         })
+        // eslint-disable-next-line no-console
+        console.log(this.$route.params.slug)
         break
       default:
         qry = this.$content()
