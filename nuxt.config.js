@@ -89,5 +89,8 @@ export default {
     //   }
   },
   target: 'static',
-  ssr: true
+  ssr: true,
+  content: {
+    nestedProperties: ['categories.slug']
+  }
 }
