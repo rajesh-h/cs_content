@@ -73,8 +73,6 @@ export default {
         qry = this.$content().where({
           'categories.slug': { $contains: this.$route.params.slug }
         })
-        // eslint-disable-next-line no-console
-        console.log(this.$route.params.slug)
         break
       default:
         qry = this.$content()
