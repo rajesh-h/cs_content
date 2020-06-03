@@ -17,6 +17,7 @@
               type="text"
               name=""
               placeholder="Enter Keyword"
+              @keyup.enter="goToSearchPage"
             />
             <button v-if="openSearch" class="searchButton active">
               <search-icon class="svg30" @click="goToSearchPage" />
