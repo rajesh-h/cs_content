@@ -74,6 +74,9 @@ export default {
           'categories.slug': { $contains: this.$route.params.slug }
         })
         break
+      case 'search':
+        qry = this.$content().search('title', this.$route.params.slug)
+        break
       default:
         qry = this.$content()
     }
