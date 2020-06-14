@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     goToSearchPage() {
-      if (this.searchText.length > 3) {
+      if (this.searchText.length > 2) {
         this.$router.push({
           name: 'search-slug',
           params: { slug: this.searchText }

@@ -58,7 +58,8 @@ export default {
         },
         services: {
           auth: true, // Just as example. Can be any other service.
-          firestore: true
+          firestore: true,
+          storage: true
         }
       }
     ]
@@ -77,7 +78,8 @@ export default {
     ]
   },
   generate: {
-    concurrency: 100
+    concurrency: 100,
+    exclude: [/^\/admin/] // exclude every URL starting with "/admin"
     //   async routes() {
     //     const { StoreDB } = require('./services/fireinit')
     //     const qs = await StoreDB.collection('recipes')

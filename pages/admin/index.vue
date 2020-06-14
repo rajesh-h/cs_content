@@ -64,47 +64,52 @@ export default {
     }
   },
   async fetch() {
-    let qry
-    switch (this.queryType) {
-      case 'index':
-        qry = this.$content()
-        break
-      case 'category':
-        qry = this.$content().where({
-          'categories.slug': { $contains: this.$route.params.slug }
-        })
-        break
-      case 'search':
-        qry = this.$content().search('title', this.$route.params.slug)
-        break
-      default:
-        qry = this.$content()
-    }
+    let response
 
-    const recipes = await qry
-      .only([
-        'slug',
-        'featuredImage',
-        'title',
-        'serves',
-        'totalTime',
-        'updated',
-        'categories'
-      ])
-      .sortBy('updated', 'desc')
-      .skip(this.skipCnt)
-      .limit(this.limitCnt)
-      .fetch()
-
-    if (recipes.length !== 0) {
-      this.articles.push(...recipes)
-      // eslint-disable-next-line no-console
-      // console.log(this.articles)
+    if (this.lastVisible === null) {
+      response = this.$fireStore
+        .collection('recipes')
+        .where('publish', '==', true)
+        .orderBy('updated', 'desc')
+        .limit(this.limitCnt)
     } else {
-      this.noFurtherResult = true
+      response = this.$fireStore
+        .collection('recipes')
+        .where('publish', '==', true)
+        .orderBy('updated', 'desc')
+        .startAfter(this.lastVisible)
+        .limit(this.limitCnt)
     }
+
+    try {
+      await response.get().then((querySnapshot) => {
+        if (querySnapshot.empty) {
+          if (this.articles.length === 0) {
+            return this.$nuxt.error({
+              statusCode: 404,
+              message: 'No Recipes Found'
+            })
+          } else {
+            this.noFurtherResult = true
+            return
+          }
+        }
+        const lastDoc = querySnapshot.docs[querySnapshot.size - 1]
+        this.lastVisible = lastDoc.data().updated
+        querySnapshot.forEach((doc) => {
+          this.articles.push({
+            ...doc.data()
+          })
+        })
+      })
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log('There is some error: ' + e)
+    }
+
+    // eslint-disable-next-line no-console
+    // console.log(this.$store.state.currentArticlesList)
   },
-  fetchOnServer: true,
 
   data() {
     return {

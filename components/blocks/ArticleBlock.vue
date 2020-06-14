@@ -24,7 +24,12 @@
           </nuxt-link>
         </div>
         <div v-if="article.featuredImage" class="image-wrapper">
-          <img :src="article.featuredImage" :alt="article.title" />
+          <img
+            :src="article.featuredImage"
+            :srcset="article.featuredImage | getSrcSet"
+            sizes="(min-width: 640px) 50vw, 100vw"
+            :alt="article.title"
+          />
         </div>
         <div class="meta">
           <div class="scl">
@@ -68,6 +73,29 @@
 
       <recipe-step-block :article="article" />
     </template>
+    <div class="bottom-navigation">
+      <nuxt-link
+        v-if="prevRecipe.slug"
+        style="float: left;"
+        :to="{
+          name: 'slug',
+          params: { slug: prevRecipe.slug }
+        }"
+      >
+        {{ prevRecipe.title }}
+      </nuxt-link>
+
+      <nuxt-link
+        v-if="nextRecipe.slug"
+        style="float: right;"
+        :to="{
+          name: 'slug',
+          params: { slug: nextRecipe.slug }
+        }"
+      >
+        {{ nextRecipe.title }}
+      </nuxt-link>
+    </div>
   </article>
 </template>
 
@@ -100,10 +128,20 @@ export default {
       // }
       throw new Error('Recipe Not Found')
     }
+
+    const [prev, next] = await this.$content()
+      .only(['title', 'slug'])
+      .sortBy('updated', 'desc')
+      .surround(this.$route.params.slug)
+      .fetch()
+    this.prevRecipe = prev
+    this.nextRecipe = next
   },
   data() {
     return {
-      article: {}
+      article: {},
+      prevRecipe: {},
+      nextRecipe: {}
     }
   },
   computed: {
@@ -301,5 +339,29 @@ header {
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.bottom-navigation {
+  padding-top: 1rem;
+  font-size: $text-ss;
+  a {
+    box-shadow: $shadow;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    user-select: none;
+    color: #282894;
+    &:hover {
+      background: $hovered-surface-color;
+    }
+    &.nuxt-link-exact-active {
+      cursor: default;
+      background: transparent;
+      box-shadow: $small-inner-shadow;
+    }
+    &:active {
+      background: transparent;
+      box-shadow: $small-inner-shadow;
+    }
+  }
 }
 </style>

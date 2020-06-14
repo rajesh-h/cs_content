@@ -17,19 +17,33 @@
     </template>
     <template v-else>
       <div class="widget-heading">
-        <h5>{{ widgetData.header }}</h5>
+        <h5>{{ widgetDataFR.header }}</h5>
       </div>
       <nuxt-link
-        v-for="link in widgetData.details"
-        :key="link.name"
-        class="widget-heading"
+        v-for="link in widgetDataFR.details"
+        :key="link.slug"
         :to="{
-          name: 'index',
-          params: { slugn: link.slug }
+          name: 'slug',
+          params: { slug: link.slug }
         }"
-        tag="div"
+        class="text"
       >
-        <h5>{{ link.name }}</h5>
+        {{ link.title }}
+      </nuxt-link>
+      <br />
+      <div class="widget-heading">
+        <h5>{{ widgetDataLR.header }}</h5>
+      </div>
+      <nuxt-link
+        v-for="link in widgetDataLR.details"
+        :key="link.title"
+        :to="{
+          name: 'slug',
+          params: { slug: link.slug }
+        }"
+        class="text"
+      >
+        {{ link.title }}
       </nuxt-link>
     </template>
   </aside>
@@ -42,32 +56,33 @@ export default {
   components: {
     InlineErrorBlock
   },
-  fetch() {
-    this.widgetData = {
-      header: 'MOST VIEWED',
-      details: [
-        {
-          name: 'Post 1',
-          slug: 'index'
-        },
-        {
-          name: 'Post 2',
-          slug: 'index'
-        },
-        {
-          name: 'Post 3',
-          slug: 'index'
-        },
-        {
-          name: 'Post 4',
-          slug: 'index'
-        }
-      ]
+  async fetch() {
+    const recipesFeatured = await this.$content()
+      .where({
+        featuredRecipe: true
+      })
+      .only(['slug', 'title'])
+      .sortBy('updated', 'desc')
+      .limit(5)
+      .fetch()
+    this.widgetDataFR = {
+      header: 'Featured Recipes',
+      details: recipesFeatured
+    }
+    const recipesLatest = await this.$content()
+      .only(['slug', 'title'])
+      .sortBy('updated', 'desc')
+      .limit(5)
+      .fetch()
+    this.widgetDataLR = {
+      header: 'Latest Recipes',
+      details: recipesLatest
     }
   },
   data() {
     return {
-      widgetData: {}
+      widgetDataFR: {},
+      widgetDataLR: {}
     }
   }
 }
@@ -80,7 +95,8 @@ aside {
   border-radius: 1rem;
   .widget-heading {
     display: flex;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: $text-sm;
     &:hover {
       color: $primary-color;
     }
@@ -90,27 +106,28 @@ aside {
       border-radius: 50%;
       margin-right: 1rem;
     }
-    .text {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      a {
-        line-height: 1;
-      }
-      a:first-child {
-        font-size: $text-xl;
-        font-weight: $bold-body-font-weight;
-        letter-spacing: $-ls2;
-        margin-bottom: 0.25rem;
-      }
-      a:last-child {
-        color: $gray-color;
-        font-size: $text-sm;
-        // font-weight: $bold-body-font-weight;
-      }
-    }
+
     &.loading {
       display: block;
+    }
+  }
+  .text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: $text-ss;
+    text-overflow: ellipsis;
+    white-space: pre-line;
+    overflow: hidden;
+    cursor: pointer;
+    color: #282894;
+
+    &:hover {
+      background: $hovered-surface-color;
+    }
+
+    h5 {
+      font-size: $text-ss;
     }
   }
   .f-button {

@@ -10,6 +10,8 @@
       <img
         v-if="article.featuredImage"
         :src="article.featuredImage"
+        :srcset="article.featuredImage | getSrcSet"
+        sizes="(min-width: 640px) 25vw, 100vw"
         :alt="article.title"
       />
       <img v-else :src="article.social_image" :alt="article.title" />
