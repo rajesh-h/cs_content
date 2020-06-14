@@ -1,13 +1,25 @@
 <template>
   <div class="page-wrapper">
-    <admin-header />
-    <div v-if="notFound">This Recipe Not Available</div>
-    <div v-if="!notFound">
-      <div v-if="addNew">
-        <recipe-form />
-      </div>
-      <div v-if="!addNew">
-        <recipe-form :recipe-object="recipeObject" />
+    <div v-if="!authenticatedUser">
+      <p>Please login</p>
+      <nuxt-link
+        :to="{
+          name: 'login'
+        }"
+      >
+        <h1>GO TO LOGIN</h1>
+      </nuxt-link>
+    </div>
+    <div v-else>
+      <admin-header />
+      <div v-if="notFound">This Recipe Not Available</div>
+      <div v-if="!notFound">
+        <div v-if="addNew">
+          <recipe-form />
+        </div>
+        <div v-if="!addNew">
+          <recipe-form :recipe-object="recipeObject" />
+        </div>
       </div>
     </div>
   </div>
@@ -39,6 +51,11 @@ export default {
       })
     }
   },
+  asyncData() {
+    return {
+      authenticatedUser: null
+    }
+  },
 
   data() {
     return {
@@ -47,6 +64,10 @@ export default {
       addNew: false,
       notFound: false
     }
+  },
+
+  created() {
+    this.$fireAuth.onAuthStateChanged((user) => (this.authenticatedUser = user))
   },
 
   methods: {},

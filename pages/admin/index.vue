@@ -1,49 +1,61 @@
 <template>
   <div class="page-wrapper">
-    <template v-if="$fetchState.pending && !articles.length">
-      <div class="article-cards-wrapper">
-        <content-placeholders
-          v-for="p in 30"
-          :key="p"
-          rounded
-          class="article-card-block"
-        >
-          <content-placeholders-img />
-          <content-placeholders-text :lines="3" />
-        </content-placeholders>
+    <div v-if="!authenticatedUser">
+      <p>Please login</p>
+      <nuxt-link
+        :to="{
+          name: 'login'
+        }"
+      >
+        <h1>GO TO LOGIN</h1>
+      </nuxt-link>
+    </div>
+    <div v-else>
+      <template v-if="$fetchState.pending && !articles.length">
+        <div class="article-cards-wrapper">
+          <content-placeholders
+            v-for="p in 30"
+            :key="p"
+            rounded
+            class="article-card-block"
+          >
+            <content-placeholders-img />
+            <content-placeholders-text :lines="3" />
+          </content-placeholders>
+        </div>
+      </template>
+      <template v-else-if="$fetchState.error">
+        <inline-error-block :error="$fetchState.error" />
+      </template>
+      <template v-else>
+        <div class="article-cards-wrapper">
+          <article-card-block
+            v-for="(article, i) in articles"
+            :key="article.id"
+            v-observe-visibility="
+              i === articles.length - 1 ? lazyLoadArticles : false
+            "
+            :article="article"
+            class="article-card-block"
+          />
+        </div>
+      </template>
+      <template v-if="$fetchState.pending && articles.length">
+        <div class="article-cards-wrapper">
+          <content-placeholders
+            v-for="p in 30"
+            :key="p"
+            rounded
+            class="article-card-block"
+          >
+            <content-placeholders-img />
+            <content-placeholders-text :lines="3" />
+          </content-placeholders>
+        </div>
+      </template>
+      <div v-if="noFurtherResult" class="no-more-results">
+        There are no more Recipes
       </div>
-    </template>
-    <template v-else-if="$fetchState.error">
-      <inline-error-block :error="$fetchState.error" />
-    </template>
-    <template v-else>
-      <div class="article-cards-wrapper">
-        <article-card-block
-          v-for="(article, i) in articles"
-          :key="article.id"
-          v-observe-visibility="
-            i === articles.length - 1 ? lazyLoadArticles : false
-          "
-          :article="article"
-          class="article-card-block"
-        />
-      </div>
-    </template>
-    <template v-if="$fetchState.pending && articles.length">
-      <div class="article-cards-wrapper">
-        <content-placeholders
-          v-for="p in 30"
-          :key="p"
-          rounded
-          class="article-card-block"
-        >
-          <content-placeholders-img />
-          <content-placeholders-text :lines="3" />
-        </content-placeholders>
-      </div>
-    </template>
-    <div v-if="noFurtherResult" class="no-more-results">
-      There are no more Recipes
     </div>
   </div>
 </template>
@@ -110,7 +122,11 @@ export default {
     // eslint-disable-next-line no-console
     // console.log(this.$store.state.currentArticlesList)
   },
-
+  asyncData() {
+    return {
+      authenticatedUser: null
+    }
+  },
   data() {
     return {
       lastVisible: null,
@@ -119,6 +135,9 @@ export default {
       limitCnt: 10,
       noFurtherResult: false
     }
+  },
+  created() {
+    this.$fireAuth.onAuthStateChanged((user) => (this.authenticatedUser = user))
   },
   // activated() {
   //   // Call fetch again if last fetch more than 60 secs ago

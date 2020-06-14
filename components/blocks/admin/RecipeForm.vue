@@ -137,7 +137,7 @@
             <div style="font-size: 16px;">Categories</div>
             <ul>
               <li
-                v-for="cat in categoriesList.categories"
+                v-for="cat in sortCategories()"
                 :key="cat.category"
                 style="display: inline; font-size: 10px;"
               >
@@ -261,7 +261,7 @@ export default {
       postTag: '',
       pageTitle: this.recipeObject.title || 'Add New Recipe',
       valid: true,
-      categoriesList: {},
+      categoriesList: { categories: [] },
       showCategories: false,
       textFieldRules: [
         (v) => !!v || 'Required',
@@ -287,6 +287,11 @@ export default {
     console.log(this.recipeObject)
   },
   methods: {
+    sortCategories() {
+      return this.categoriesList.categories.slice().sort(function (a, b) {
+        return a.category.trim() > b.category.trim() ? 1 : -1
+      })
+    },
     updatePicture() {
       this.recipeObject.featuredImage = ''
     },
