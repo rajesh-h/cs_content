@@ -39,7 +39,8 @@ export default {
     '@nuxtjs/eslint-module',
     '@nuxtjs/svg',
     '@nuxtjs/style-resources',
-    '@nuxtjs/color-mode'
+    '@nuxtjs/color-mode',
+    '@nuxtjs/pwa'
   ],
   modules: [
     'nuxt-polyfill',
@@ -94,5 +95,11 @@ export default {
   ssr: true,
   content: {
     nestedProperties: ['categories.slug']
+  },
+  pwa: {
+    manifest: {
+      name: 'CookingShooking',
+      lang: 'en'
+    }
   }
 }

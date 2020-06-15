@@ -31,6 +31,10 @@
             <time-icon class="svg24" /> Published?
             {{ article.publish }}
           </span>
+          <span class="comments">
+            <time-icon class="svg24" /> Featured?
+            {{ article.featuredRecipe }}
+          </span>
         </div>
         <nuxt-link
           :to="{
