@@ -40,7 +40,8 @@ export default {
     '@nuxtjs/svg',
     '@nuxtjs/style-resources',
     '@nuxtjs/color-mode',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    '~/modules/generateContent'
   ],
   modules: [
     'nuxt-polyfill',
@@ -80,6 +81,7 @@ export default {
   },
   generate: {
     concurrency: 100,
+    fallback: true,
     exclude: [/^\/admin/] // exclude every URL starting with "/admin"
     //   async routes() {
     //     const { StoreDB } = require('./services/fireinit')
@@ -101,5 +103,28 @@ export default {
       name: 'CookingShooking',
       lang: 'en'
     }
+  },
+  hooks: {
+    // generate: {
+    //   before(generator) {
+    //     const dateOffset = 24 * 60 * 60 * 1000 * 5 // 5 days
+    //     const goBackTill = Date.now() - dateOffset
+    //     // eslint-disable-next-line no-console
+    //     console.log('Before Build Script')
+    //     // eslint-disable-next-line no-console
+    //     console.log(goBackTill)
+    //     const { StoreDB } = require('./services/fireinit')
+    //     StoreDB.collection('recipes')
+    //       .where('publish', '==', true)
+    //       .where('updated', '>', goBackTill)
+    //       .orderBy('updated', 'desc')
+    //       .limit(10)
+    //       .get()
+    //       .then((res) => {
+    //         // eslint-disable-next-line no-console
+    //         res.docs.map((x) => console.log(`${x.data().slug}`))
+    //       })
+    //   }
+    // }
   }
 }

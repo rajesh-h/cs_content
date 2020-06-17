@@ -27,7 +27,7 @@
       </nuxt-link>
       <div class="tags">
         <nuxt-link
-          v-for="category in article.categories"
+          v-for="category in article.categories.slice(0, 2)"
           :key="category.slug"
           :to="{ name: 'category-slug', params: { slug: category.slug } }"
           class="tag"
@@ -45,6 +45,12 @@
             <time-icon class="svg24" />
             {{ article.totalTime }}
           </span>
+          <span v-if="article.youtubeUrl" class="comments">
+            <video-icon class="svg24" />
+          </span>
+          <span v-else class="comments">
+            <document-icon class="svg24" />
+          </span>
         </div>
         <time>{{ article.updated | FormatDate }}</time>
       </div>
@@ -55,16 +61,26 @@
 <script>
 import ServesIcon from '@/assets/icons/serves.svg?inline'
 import TimeIcon from '@/assets/icons/time.svg?inline'
+import VideoIcon from '@/assets/icons/video.svg?inline'
+import DocumentIcon from '@/assets/icons/document.svg?inline'
 
 export default {
   components: {
     ServesIcon,
-    TimeIcon
+    TimeIcon,
+    VideoIcon,
+    DocumentIcon
   },
   props: {
     article: {
       type: Object,
       default: null
+    }
+  },
+  methods: {
+    imageUrlAlt(event) {
+      // usage @error="imageUrlAlt"
+      event.target.src = 'some-alternative-image'
     }
   }
 }

@@ -89,7 +89,8 @@ export default {
         'serves',
         'totalTime',
         'updated',
-        'categories'
+        'categories',
+        'youtubeUrl'
       ])
       .sortBy('updated', 'desc')
       .skip(this.skipCnt)

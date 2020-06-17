@@ -20,7 +20,7 @@
     "firebase": "^7.14.2",
     "intersection-observer": "^0.10.0",
     "nuxt-ackee": "^1.0.1",
-    "nuxt-edge": "^2.13.0-26509786.618eb5fa",
+    "nuxt-edge": "^2.13.0-26537781.68d498b2",
     "nuxt-payload-extractor": "^1.0.0",
     "nuxt-polyfill": "^1.0.3",
     "vue-content-placeholders": "^0.2.1",
