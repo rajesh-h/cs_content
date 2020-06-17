@@ -1,7 +1,8 @@
 <template>
   <div class="page-wrapper">
-    <div class="form-box">
-      <div v-if="authenticatedUser">
+    <div v-if="authenticatedUser">
+      <admin-header />
+      <div class="form-box">
         <form>
           <p>You are logged in as {{ authenticatedUser.email }}.</p>
 
@@ -16,8 +17,10 @@
           </div>
         </form>
       </div>
+    </div>
 
-      <div v-else>
+    <div v-else>
+      <div class="form-box">
         <form>
           <div class="field-box">
             <input
@@ -80,8 +83,10 @@
 </template>
 
 <script>
+import AdminHeader from '@/components/blocks/admin/Header'
 export default {
   name: 'Login',
+  components: { AdminHeader },
   asyncData() {
     return {
       authenticatedUser: null,

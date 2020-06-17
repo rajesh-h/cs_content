@@ -161,6 +161,15 @@
             Submit
           </a>
         </div>
+        <div class="button-box">
+          <a style="color: red;" @click="deleteRecipe">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Delete
+          </a>
+        </div>
       </form>
     </div>
   </div>
@@ -287,6 +296,21 @@ export default {
     console.log(this.recipeObject)
   },
   methods: {
+    deleteRecipe(e) {
+      if (this.recipeObject.slug) {
+        if (confirm('are you sure to delete this Recipe?')) e.preventDefault()
+        this.$fireStore
+          .collection('recipes')
+          .doc(this.recipeObject.slug)
+          .delete()
+          .then(() => {
+            alert('Recipe Deleted, Redirecting to Edit Page')
+            this.$router.push({
+              name: 'admin-edit'
+            })
+          })
+      }
+    },
     sortCategories() {
       return this.categoriesList.categories.slice().sort(function (a, b) {
         return a.category.trim() > b.category.trim() ? 1 : -1
@@ -301,10 +325,6 @@ export default {
       }
     },
     reset() {
-      // Reset Steps images
-      this.$refs.recipeIntrosComponent.resetImageUploadOnsteps()
-      this.$refs.recipeStepsComponent.resetImageUploadOnsteps()
-      this.$refs.imgUpload.resetImageUpload()
       this.recipeObject = {
         title: '',
         slug: '',
@@ -350,7 +370,6 @@ export default {
         updated: '',
         author: 'Yaman Agarwal'
       }
-      this.$refs.form.reset()
     },
     resetValidation() {
       this.$refs.form.resetValidation()
@@ -376,6 +395,10 @@ export default {
         .set(this.recipeObject, { merge: true })
         .then(() => {
           alert('Recipe Added/Edited')
+          this.$router.push({
+            name: 'admin-edit-slug',
+            params: { slug: this.recipeObject.slug }
+          })
         })
       // eslint-disable-next-line no-console
       console.log(this.recipeObject)
