@@ -39,12 +39,10 @@ export default {
     '@nuxtjs/eslint-module',
     '@nuxtjs/svg',
     '@nuxtjs/style-resources',
-    '@nuxtjs/color-mode',
-    '@nuxtjs/pwa',
     '~/modules/generateContent'
   ],
   modules: [
-    'nuxt-polyfill',
+    '@nuxtjs/pwa',
     '@nuxt/content',
     // 'nuxt-ackee',
     [
@@ -71,14 +69,14 @@ export default {
   //   domainId: '6336379b-8d3e-4069-9d2e-897be6a7ed4e'
   // }
   // Configure polyfills:
-  polyfill: {
-    features: [
-      {
-        require: 'intersection-observer',
-        detect: () => 'IntersectionObserver' in window
-      }
-    ]
-  },
+  // polyfill: {
+  //   features: [
+  //     {
+  //       require: 'intersection-observer',
+  //       detect: () => 'IntersectionObserver' in window
+  //     }
+  //   ]
+  // },
   generate: {
     concurrency: 100,
     fallback: true,
