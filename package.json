@@ -19,18 +19,18 @@
     "dayjs": "^1.8.27",
     "firebase": "^7.14.2",
     "intersection-observer": "^0.10.0",
+    "nuxt": "^2.13.0",
     "nuxt-ackee": "^1.0.1",
-    "nuxt-edge": "^2.13.0-26537781.68d498b2",
     "nuxt-payload-extractor": "^1.0.0",
     "nuxt-polyfill": "^1.0.3",
     "vue-content-placeholders": "^0.2.1",
-    "vue-observe-visibility": "^0.4.6"
+    "vue-observe-visibility": "^0.4.6",
+    "@nuxtjs/pwa": "^3.0.0-beta.20"
   },
   "devDependencies": {
     "@nuxtjs/color-mode": "^1.0.0",
     "@nuxtjs/eslint-config": "^2.0.0",
     "@nuxtjs/eslint-module": "^1.2.0",
-    "@nuxtjs/pwa": "^3.0.0-beta.20",
     "@nuxtjs/style-resources": "^1.0.0",
     "@nuxtjs/svg": "^0.1.11",
     "babel-eslint": "^10.0.1",

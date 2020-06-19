@@ -75,7 +75,7 @@
     </template>
     <div class="bottom-navigation">
       <nuxt-link
-        v-if="prevRecipe.slug"
+        v-if="prevRecipe"
         style="float: left;"
         :to="{
           name: 'slug',
@@ -86,7 +86,7 @@
       </nuxt-link>
 
       <nuxt-link
-        v-if="nextRecipe.slug"
+        v-if="nextRecipe"
         style="float: right;"
         :to="{
           name: 'slug',
@@ -140,8 +140,8 @@ export default {
   data() {
     return {
       article: {},
-      prevRecipe: {},
-      nextRecipe: {}
+      prevRecipe: null,
+      nextRecipe: null
     }
   },
   computed: {
